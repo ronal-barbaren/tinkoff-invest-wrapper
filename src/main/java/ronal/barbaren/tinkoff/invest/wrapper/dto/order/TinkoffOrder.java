@@ -2,6 +2,8 @@ package ronal.barbaren.tinkoff.invest.wrapper.dto.order;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import ronal.barbaren.tinkoff.invest.wrapper.dto.order.stage.OrderStage;
+import ronal.barbaren.tinkoff.invest.wrapper.dto.order.stage.TinkoffOrderStage;
 import ronal.barbaren.tinkoff.invest.wrapper.utils.TinkoffTimestampUtils;
 import ru.tinkoff.piapi.contract.v1.OrderDirection;
 import ru.tinkoff.piapi.contract.v1.OrderExecutionReportStatus;
@@ -10,6 +12,9 @@ import ru.tinkoff.piapi.core.utils.MapperUtils;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @EqualsAndHashCode(of = "id")
@@ -25,6 +30,7 @@ public class TinkoffOrder implements Order {
     private final boolean rejected;
     private final boolean buy;
     private final boolean sell;
+    private final Set<OrderStage> stages;
 
     public TinkoffOrder(OrderState order) {
         this.id = order.getOrderId();
@@ -38,5 +44,8 @@ public class TinkoffOrder implements Order {
         this.priceExecuted = MapperUtils.moneyValueToBigDecimal(order.getExecutedOrderPrice());
         this.buy = order.getDirection() == OrderDirection.ORDER_DIRECTION_BUY;
         this.sell = order.getDirection() == OrderDirection.ORDER_DIRECTION_SELL;
+        if (order.getStagesCount() != 0)
+            this.stages = order.getStagesList().stream().map(TinkoffOrderStage::new).collect(Collectors.toSet());
+        else this.stages = Collections.emptySet();
     }
 }

@@ -1,7 +1,10 @@
 package ronal.barbaren.tinkoff.invest.wrapper.dto.order;
 
+import ronal.barbaren.tinkoff.invest.wrapper.dto.order.stage.OrderStage;
+
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Set;
 
 public interface Order {
 
@@ -32,4 +35,6 @@ public interface Order {
     boolean isBuy();
 
     boolean isSell();
+
+    Set<OrderStage> getStages();
 }
