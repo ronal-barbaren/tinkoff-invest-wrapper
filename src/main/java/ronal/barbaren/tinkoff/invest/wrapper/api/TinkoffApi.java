@@ -84,10 +84,12 @@ public class TinkoffApi implements Api {
     }
 
     @Override
-    public BigDecimal getLastPrice() {
+    public @Nullable BigDecimal getLastPrice() {
         List<LastPrice> lastPrices = api.getMarketDataService()
                 .getLastPricesSync(Collections.singleton(figi));
-        if (CollectionUtils.isEmpty(lastPrices) || lastPrices.size() > 1)
+        if (CollectionUtils.isEmpty(lastPrices))
+            return null;
+        if (lastPrices.size() > 1)
             throw new IllegalStateException("impossible, get more than one last price, figi: " + figi);
         return MapperUtils.quotationToBigDecimal(lastPrices.get(0).getPrice());
     }
