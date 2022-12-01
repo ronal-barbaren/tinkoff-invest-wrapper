@@ -4,6 +4,7 @@ import lombok.experimental.UtilityClass;
 import org.apache.commons.collections4.CollectionUtils;
 import ru.tinkoff.piapi.contract.v1.Operation;
 
+import javax.annotation.Nullable;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Comparator;
@@ -11,6 +12,7 @@ import java.util.Comparator;
 @UtilityClass
 public class TinkoffOperationUtils {
 
+    @Nullable
     public static Operation getLast(Collection<Operation> operations) {
         if (CollectionUtils.isEmpty(operations))
             return null;
