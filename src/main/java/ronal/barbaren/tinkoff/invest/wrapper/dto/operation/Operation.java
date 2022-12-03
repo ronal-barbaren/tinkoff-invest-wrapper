@@ -19,6 +19,8 @@ public interface Operation {
 
     boolean isProgress();
 
+    boolean isPartial();
+
     boolean isBuy();
 
     boolean isSell();

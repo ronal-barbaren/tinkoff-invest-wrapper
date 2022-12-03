@@ -28,6 +28,7 @@ public class TinkoffOrder implements Order {
     private final boolean executed;
     private final boolean cancelled;
     private final boolean rejected;
+    private final boolean partial;
     private final boolean buy;
     private final boolean sell;
     private final Set<OrderStage> stages;
@@ -44,7 +45,8 @@ public class TinkoffOrder implements Order {
         this.priceExecuted = MapperUtils.moneyValueToBigDecimal(order.getExecutedOrderPrice());
         this.buy = order.getDirection() == OrderDirection.ORDER_DIRECTION_BUY;
         this.sell = order.getDirection() == OrderDirection.ORDER_DIRECTION_SELL;
-        if (order.getStagesCount() != 0)
+        this.partial = order.getStagesCount() != 0;
+        if (partial)
             this.stages = order.getStagesList().stream().map(TinkoffOrderStage::new).collect(Collectors.toSet());
         else this.stages = Collections.emptySet();
     }

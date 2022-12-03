@@ -32,6 +32,8 @@ public interface Order {
 
     boolean isRejected();
 
+    boolean isPartial();
+
     boolean isBuy();
 
     boolean isSell();

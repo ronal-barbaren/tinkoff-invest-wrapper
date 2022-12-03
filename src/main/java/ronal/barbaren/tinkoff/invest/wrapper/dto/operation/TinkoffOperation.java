@@ -24,6 +24,7 @@ public class TinkoffOperation implements Operation {
     private final boolean executed;
     private final boolean cancelled;
     private final boolean progress;
+    private final boolean partial;
     private final boolean buy;
     private final boolean sell;
     private final Instant date;
@@ -39,7 +40,8 @@ public class TinkoffOperation implements Operation {
         this.buy = operation.getOperationType() == OperationType.OPERATION_TYPE_BUY;
         this.sell = operation.getOperationType() == OperationType.OPERATION_TYPE_SELL;
         this.date = TinkoffTimestampUtils.toInstant(operation.getDate());
-        if (operation.getTradesCount() != 0)
+        this.partial = operation.getTradesCount() != 0;
+        if (partial)
             this.trades = operation.getTradesList().stream().map(TinkoffOperationTrade::new).collect(Collectors.toSet());
         else this.trades = Collections.emptySet();
     }
