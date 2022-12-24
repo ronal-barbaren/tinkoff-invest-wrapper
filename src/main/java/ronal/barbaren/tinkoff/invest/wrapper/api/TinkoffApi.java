@@ -18,6 +18,7 @@ import ru.tinkoff.piapi.core.models.Position;
 import ru.tinkoff.piapi.core.models.Positions;
 import ru.tinkoff.piapi.core.utils.MapperUtils;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -35,14 +36,16 @@ public class TinkoffApi implements Api {
         this.api = InvestApi.create(token);
     }
 
+    @Nonnull
     @Override
     public String buy(long lots, BigDecimal price) {
-        return postOrder(lots, price, OrderDirection.ORDER_DIRECTION_BUY);
+        return postLimitOrder(lots, price, OrderDirection.ORDER_DIRECTION_BUY);
     }
 
+    @Nonnull
     @Override
     public String sell(long lots, BigDecimal price) {
-        return postOrder(lots, price, OrderDirection.ORDER_DIRECTION_SELL);
+        return postLimitOrder(lots, price, OrderDirection.ORDER_DIRECTION_SELL);
     }
 
     @Override
@@ -50,6 +53,7 @@ public class TinkoffApi implements Api {
         api.getOrdersService().cancelOrderSync(accountId, orderId);
     }
 
+    @Nonnull
     @Override
     public Set<Order> getNotExecutedOrders() {
         List<OrderState> orders = api.getOrdersService().getOrdersSync(accountId);
@@ -62,7 +66,8 @@ public class TinkoffApi implements Api {
     }
 
     @Override
-    public @Nullable TinkoffPosition getPosition() {
+    @Nullable
+    public TinkoffPosition getPosition() {
         Portfolio response = api.getOperationsService().getPortfolioSync(accountId);
         List<Position> positions = response.getPositions().stream().filter(a -> figi.equals(a.getFigi())).toList();
         if (CollectionUtils.isEmpty(positions))
@@ -74,6 +79,7 @@ public class TinkoffApi implements Api {
     }
 
     @Override
+    @Nonnull
     public Set<Operation> getExecutedOperations(Instant from, Instant to) {
         List<ru.tinkoff.piapi.contract.v1.Operation> operations = api.getOperationsService().getExecutedOperationsSync(accountId, from, to, figi);
         if (CollectionUtils.isEmpty(operations))
@@ -84,7 +90,8 @@ public class TinkoffApi implements Api {
     }
 
     @Override
-    public @Nullable BigDecimal getLastPrice() {
+    @Nullable
+    public BigDecimal getLastPrice() {
         List<LastPrice> lastPrices = api.getMarketDataService()
                 .getLastPricesSync(Collections.singleton(figi));
         if (CollectionUtils.isEmpty(lastPrices))
@@ -103,11 +110,13 @@ public class TinkoffApi implements Api {
     }
 
     @Override
+    @Nonnull
     public BigDecimal getMinPriceIncrement() {
         Instrument instrument = api.getInstrumentsService().getInstrumentByFigiSync(figi);
         return MapperUtils.quotationToBigDecimal(instrument.getMinPriceIncrement());
     }
 
+    @Nonnull
     protected List<Candle> getCandles(Instant from, Instant to, CandleInterval interval) {
         return api.getMarketDataService()
                 .getCandlesSync(figi, from, to, interval)
@@ -117,31 +126,37 @@ public class TinkoffApi implements Api {
     }
 
     @Override
+    @Nonnull
     public List<Candle> getCandles1Min(Instant from, Instant to) {
         return getCandles(from, to, CandleInterval.CANDLE_INTERVAL_1_MIN);
     }
 
     @Override
+    @Nonnull
     public List<Candle> getCandles5Min(Instant from, Instant to) {
         return getCandles(from, to, CandleInterval.CANDLE_INTERVAL_5_MIN);
     }
 
     @Override
+    @Nonnull
     public List<Candle> getCandles15Min(Instant from, Instant to) {
         return getCandles(from, to, CandleInterval.CANDLE_INTERVAL_15_MIN);
     }
 
     @Override
+    @Nonnull
     public List<Candle> getCandles1Hour(Instant from, Instant to) {
         return getCandles(from, to, CandleInterval.CANDLE_INTERVAL_HOUR);
     }
 
     @Override
+    @Nonnull
     public List<Candle> getCandles1Day(Instant from, Instant to) {
         return getCandles(from, to, CandleInterval.CANDLE_INTERVAL_DAY);
     }
 
     @Override
+    @Nonnull
     public Set<Amount> getAmounts() {
         Positions positions = api.getOperationsService().getPositionsSync(accountId);
         return positions.getMoney().stream()
@@ -149,7 +164,8 @@ public class TinkoffApi implements Api {
                 .collect(Collectors.toSet());
     }
 
-    protected String postOrder(long lots, BigDecimal price, OrderDirection operation) {
+    @Nonnull
+    protected String postLimitOrder(long lots, BigDecimal price, OrderDirection operation) {
         if (Objects.equals(0L, lots) || Objects.isNull(price))
             throw new IllegalArgumentException("lots = 0 or price is null");
         return api.getOrdersService()
