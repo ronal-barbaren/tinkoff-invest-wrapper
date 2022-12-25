@@ -28,11 +28,16 @@
         <dependency>
             <groupId>ru.tinkoff.piapi</groupId>
             <artifactId>java-sdk-core</artifactId>
-            <version>1.0.17</version>
+            <version>1.0.19</version>
         </dependency>
         <dependency>
             <groupId>ronal.barbaren</groupId>
             <artifactId>big-decimal-utils</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>ronal.barbaren</groupId>
+            <artifactId>instant-utils</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>

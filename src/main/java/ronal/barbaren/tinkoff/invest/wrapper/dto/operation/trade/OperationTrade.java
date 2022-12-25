@@ -1,14 +1,13 @@
 package ronal.barbaren.tinkoff.invest.wrapper.dto.operation.trade;
 
-import java.math.BigDecimal;
-import java.time.Instant;
+import ronal.barbaren.tinkoff.invest.wrapper.dto.DtoDate;
 
-public interface OperationTrade {
+import java.math.BigDecimal;
+
+public interface OperationTrade extends DtoDate {
     String getId();
 
     BigDecimal getPrice();
-
-    Instant getDate();
 
     long getLots();
 }
