@@ -38,4 +38,27 @@ class CacheExtApiTest {
         }
         verify(api, times(100)).getCandles1Day(any(), any());
     }
+
+    @Test
+    void cache1Day() {
+        MockedNow mockedNow = new MockedNow();
+        Api api = mock(Api.class);
+        CacheExtApi cacheExtApi = new CacheExtApi(api) {
+            @Override
+            public Instant now() {
+                return mockedNow.now;
+            }
+        };
+
+        Instant now = InstantUtils.truncateMinute(Instant.now());
+        List<Instant> minutes = IntStream.range(0, 6000)
+                .mapToObj(i -> now.minus(i, ChronoUnit.MINUTES))
+                .sorted()
+                .toList();
+        for (Instant s : minutes) {
+            mockedNow.now = s;
+            cacheExtApi.getLastTrade1DayCandleExcludeCurrentDay();
+        }
+        verify(api, times(5)).getCandles1Day(any(), any());
+    }
 }
