@@ -13,6 +13,7 @@ import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -80,30 +81,42 @@ public abstract class BaseExtApi implements Api {
     @Nonnull
     @Override
     public List<Candle> getCandles1Min(Instant from, Instant to) {
+        isCorrectDates(from, to);
         return api.getCandles1Min(from, to);
     }
 
     @Nonnull
     @Override
     public List<Candle> getCandles5Min(Instant from, Instant to) {
+        isCorrectDates(from, to);
         return api.getCandles5Min(from, to);
     }
 
     @Nonnull
     @Override
     public List<Candle> getCandles15Min(Instant from, Instant to) {
+        isCorrectDates(from, to);
         return api.getCandles15Min(from, to);
     }
 
     @Nonnull
     @Override
     public List<Candle> getCandles1Hour(Instant from, Instant to) {
+        isCorrectDates(from, to);
         return api.getCandles1Hour(from, to);
     }
 
     @Nonnull
     @Override
     public List<Candle> getCandles1Day(Instant from, Instant to) {
+        isCorrectDates(from, to);
         return api.getCandles1Day(from, to);
+    }
+
+    private void isCorrectDates(Instant from, Instant to) {
+        Objects.requireNonNull(from, "'from' instant can't be null");
+        Objects.requireNonNull(to, "'to' instant can't be null");
+        if (from.isAfter(to))
+            throw new IllegalArgumentException("'from' can't be after 'to'");
     }
 }
